@@ -12,6 +12,5 @@ namespace OnboardingExperience
         public int Age { get; set; }
         public int Pin { get; set; }
         public bool IsOwner { get; set; }
-
     }
 }
