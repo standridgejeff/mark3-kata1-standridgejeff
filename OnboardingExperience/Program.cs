@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data.SqlTypes;
+using System.Net.Mime;
 using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Security.Cryptography.X509Certificates;
@@ -11,9 +12,15 @@ namespace OnboardingExperience
         static void Main(string[] args)
         {
             var user = new User();
+
             Console.WriteLine("Hello, and welcome to our bank.");
             Console.WriteLine("Please press Enter to continue...");
             Console.ReadKey(true);
+
+            Console.WriteLine("First, we need to get a little information from you.");
+            user.IsOwner = IsOwnerQuestions("Will you please verify that you are the owener of this account?");
+            Console.ReadKey();
+
 
             user.FirstName = AskQuestions("What is your first name?");
             Console.WriteLine($"Hello, {user.FirstName}, nice to meet you.");
@@ -30,6 +37,12 @@ namespace OnboardingExperience
             Console.WriteLine("Please press Enter to continue...");
             Console.ReadKey();
 
+            user.Pin = AskNumberQuestions("What is your pin?");
+            Console.WriteLine("Pleaser press Enter to continue...");
+            Console.ReadKey();
+
+            Console.WriteLine("We appreciate your business, thanks for using our bank");
+            Console.ReadKey();
         }
 
         public static string AskQuestions(string question)
@@ -45,20 +58,54 @@ namespace OnboardingExperience
             var answered = false;
             do
             {
-
                 var result = AskQuestions(question);
                 answered = Int32.TryParse(result, out ageNumber);
 
                 if (!answered)
                 {
-                    Console.WriteLine("You need to enter a regular number");
+                    Console.WriteLine("You need to enter a regular number.");
                 }
 
             } while (!answered);
 
-
             return ageNumber;
 
+            var userPin = 0;
+            var pinanswered = false;
+
+            do
+            {
+                var answer = AskQuestions(question);
+                pinanswered = Int32.TryParse(answer, out userPin);
+                ;
+
+                if (!pinanswered)
+                {
+                    Console.WriteLine("You need to enter a regular number");
+                }
+            } while (!pinanswered);
+
+            return userPin;
         }
+
+        static bool IsOwnerQuestions(string question)
+        {
+            while (true)
+            {
+                var no = false;
+                var response = AskQuestions(question + " Yes or No");
+                
+                if (response.ToLower() == "no")
+                {
+                    Console.WriteLine("We're very sorry but you cannot access accounts that are not your own.");
+                    Console.WriteLine("Thanks very much for your time and cooperation");
+                    return no;
+                }
+
+                return !true;
+            }
+        }
+
+
     }
 }
