@@ -19,7 +19,6 @@ namespace OnboardingExperience
 
             Console.WriteLine("First, we need to get a little information from you.");
             user.IsOwner = IsOwnerQuestions("Will you please verify that you are the owener of this account?");
-            Console.ReadKey();
 
 
             user.FirstName = AskQuestions("What is your first name?");
@@ -29,7 +28,7 @@ namespace OnboardingExperience
 
 
             user.LastName = AskQuestions("What is your last name?");
-            Console.WriteLine("Great, thanks for the info. ");
+            Console.WriteLine($"Great Mr./ Ms. {user.LastName}, thanks for the info. ");
             Console.WriteLine("Please press Enter to continue...");
             Console.ReadKey();
 
@@ -65,46 +64,45 @@ namespace OnboardingExperience
                 {
                     Console.WriteLine("You need to enter a regular number.");
                 }
-
             } while (!answered);
 
             return ageNumber;
 
-            var userPin = 0;
-            var pinanswered = false;
+            /*var userPin = 0;
+            var pinanswered = true;
 
             do
             {
                 var answer = AskQuestions(question);
                 pinanswered = Int32.TryParse(answer, out userPin);
-                ;
 
                 if (!pinanswered)
                 {
-                    Console.WriteLine("You need to enter a regular number");
+                    Console.WriteLine("That pin is invalid");
                 }
             } while (!pinanswered);
 
-            return userPin;
+            return userPin;*/
         }
 
-        static bool IsOwnerQuestions(string question)
-        {
+         private static bool IsOwnerQuestions(string question)
+         {
             while (true)
             {
-                var no = false;
                 var response = AskQuestions(question + " Yes or No");
+                
                 
                 if (response.ToLower() == "no")
                 {
                     Console.WriteLine("We're very sorry but you cannot access accounts that are not your own.");
-                    Console.WriteLine("Thanks very much for your time and cooperation");
-                    return no;
+                    Console.WriteLine("Thanks very much for your time and cooperation. Program will exit. Good bye");
+                    Console.ReadLine();
+                    Environment.Exit(-1);
                 }
 
-                return !true;
+                return false;
             }
-        }
+         }
 
 
     }
