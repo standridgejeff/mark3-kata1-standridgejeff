@@ -1,9 +1,4 @@
 ﻿using System;
-using System.Data.SqlTypes;
-using System.Net.Mime;
-using System.Reflection.Metadata.Ecma335;
-using System.Runtime.CompilerServices;
-using System.Security.Cryptography.X509Certificates;
 
 namespace OnboardingExperience
 {
@@ -15,28 +10,34 @@ namespace OnboardingExperience
 
             Console.WriteLine("Hello, and welcome to our bank.");
             Console.WriteLine("Please press Enter to continue...");
-            Console.ReadKey(true);
+            Console.ReadKey();
 
             Console.WriteLine("First, we need to get a little information from you.");
-            user.IsOwner = IsOwnerQuestions("Will you please verify that you are the owener of this account?");
+            user.IsOwner = AskBoolQuestion("Will you please verify that you are the owner of this account?");
+            if (!user.IsOwner)
+            {
+                Console.WriteLine("We're very sorry but you cannot access accounts that are not your own.");
+                Console.WriteLine("Thanks very much for your time and cooperation. Program will exit. Good bye");
+                Console.ReadKey();
+                Environment.Exit(-1);
+            }
 
-
-            user.FirstName = AskQuestions("What is your first name?");
+            user.FirstName = AskQuestion("What is your first name?");
             Console.WriteLine($"Hello, {user.FirstName}, nice to meet you.");
             Console.WriteLine("Please press Enter to continue...");
             Console.ReadKey();
 
 
-            user.LastName = AskQuestions("What is your last name?");
+            user.LastName = AskQuestion("What is your last name?");
             Console.WriteLine($"Great Mr./ Ms. {user.LastName}, thanks for the info. ");
             Console.WriteLine("Please press Enter to continue...");
             Console.ReadKey();
 
-            user.Age = AskNumberQuestions("What is your age?");
+            user.Age = AskNumberQuestion("What is your age?");
             Console.WriteLine("Please press Enter to continue...");
             Console.ReadKey();
 
-            user.Pin = AskNumberQuestions("What is your pin?");
+            user.Pin = AskNumberQuestion("What is your pin?");
             Console.WriteLine("Pleaser press Enter to continue...");
             Console.ReadKey();
 
@@ -44,21 +45,21 @@ namespace OnboardingExperience
             Console.ReadKey();
         }
 
-        public static string AskQuestions(string question)
+        public static string AskQuestion(string question)
         {
 
             Console.WriteLine(question);
             return Console.ReadLine();
         }
 
-        static int AskNumberQuestions(string question)
+        static int AskNumberQuestion(string question)
         {
-            var ageNumber = 0;
+            var number = 0;
             var answered = false;
             do
             {
-                var result = AskQuestions(question);
-                answered = Int32.TryParse(result, out ageNumber);
+                var result = AskQuestion(question);
+                answered = Int32.TryParse(result, out number);
 
                 if (!answered)
                 {
@@ -66,43 +67,30 @@ namespace OnboardingExperience
                 }
             } while (!answered);
 
-            return ageNumber;
+            return number;
 
-            /*var userPin = 0;
-            var pinanswered = true;
 
-            do
-            {
-                var answer = AskQuestions(question);
-                pinanswered = Int32.TryParse(answer, out userPin);
-
-                if (!pinanswered)
-                {
-                    Console.WriteLine("That pin is invalid");
-                }
-            } while (!pinanswered);
-
-            return userPin;*/
         }
 
-         private static bool IsOwnerQuestions(string question)
-         {
+        private static bool AskBoolQuestion(string question)
+        {
             while (true)
             {
-                var response = AskQuestions(question + " Yes or No");
-                
-                
-                if (response.ToLower() == "no")
-                {
-                    Console.WriteLine("We're very sorry but you cannot access accounts that are not your own.");
-                    Console.WriteLine("Thanks very much for your time and cooperation. Program will exit. Good bye");
-                    Console.ReadLine();
-                    Environment.Exit(-1);
-                }
+                var response = AskQuestion(question + " Yes or No");
 
-                return false;
+
+                switch (response.ToLower())
+                {
+                    case "no":
+                        return false;
+                    case "yes":
+                        return true;
+                    default:
+                        Console.WriteLine("You need to answer yes or no");
+                        break;
+                }
             }
-         }
+        }
 
 
     }
